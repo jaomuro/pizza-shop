@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { resolve } from 'path'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -25,7 +25,10 @@ export function Signin() {
 
   async function handleSignin(data: SignInFormType) {
     console.log(data)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    toast.success('Enviamos um link de autenticação para seu e-mail', {
+      action: { label: 'Reenviar', onClick: () => handleSignin(data) },
+    })
   }
   return (
     <>
