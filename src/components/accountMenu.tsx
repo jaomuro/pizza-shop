@@ -1,5 +1,7 @@
 import { Building, ChevronDown, LogOut } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
+
 import { Button } from './ui/button'
 import {
   DropdownMenu,
@@ -34,7 +36,11 @@ export function AccountMenu() {
           <Building className="mr-2 size-4" />
           <span>Perfil da loja</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="text-rose-500 dark:text-rose-400">
+        <DropdownMenuItem
+          className={cn(
+            'text-rose-500 focus:text-destructive dark:text-rose-400',
+          )}
+        >
           <LogOut className="mr-2 size-4" />
           <span>Sair</span>
         </DropdownMenuItem>

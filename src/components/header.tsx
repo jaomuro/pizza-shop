@@ -16,14 +16,8 @@ export function Header() {
           <NavLink to="/">
             <Home className="size-4" /> Início
           </NavLink>
-          <NavLink to="/">
+          <NavLink to="/orders">
             <UtensilsCrossedIcon className="size-4" /> Pedidos
-          </NavLink>
-          <NavLink to="/">
-            <Home className="size-4" /> Início
-          </NavLink>
-          <NavLink to="/">
-            <Home className="size-4" /> Início
           </NavLink>
         </nav>
         <div className="ml-auto flex items-center gap-2">
