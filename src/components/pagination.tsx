@@ -2,7 +2,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsLeftIcon,
   ChevronsRight,
 } from 'lucide-react'
 
