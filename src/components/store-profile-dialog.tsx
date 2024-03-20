@@ -1,12 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { getManagedRestaurant } from '@/api/get-managed-restaurant'
 import { updateProfile } from '@/api/update-profile'
-import { queryCliente } from '@/lib/react-query'
 
 import { Button } from './ui/button'
 import {
@@ -29,9 +28,12 @@ const StoreProfileSchema = z.object({
 type StoreProfileSchemaType = z.infer<typeof StoreProfileSchema>
 
 export function StoreProfileDialog() {
+  const queryClient = useQueryClient()
+
   const { data: managedRestaurant } = useQuery({
     queryKey: ['managed-restaurant'],
     queryFn: getManagedRestaurant,
+    staleTime: Infinity,
   })
 
   const {
@@ -49,7 +51,7 @@ export function StoreProfileDialog() {
   const { mutateAsync: updateProfilefn } = useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {
-      queryCliente.invalidateQueries({ queryKey: ['profile'] })
+      queryClient.invalidateQueries({ queryKey: ['managed-restaurant'] })
     },
   })
 
