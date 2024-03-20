@@ -1,12 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { getManagedRestaurant } from '@/api/get-managed-restaurant'
+import { updateProfile } from '@/api/update-profile'
+import { queryCliente } from '@/lib/react-query'
 
 import { Button } from './ui/button'
 import {
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -30,13 +34,36 @@ export function StoreProfileDialog() {
     queryFn: getManagedRestaurant,
   })
 
-  const { register, handleSubmit } = useForm<StoreProfileSchemaType>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<StoreProfileSchemaType>({
     resolver: zodResolver(StoreProfileSchema),
     values: {
       name: managedRestaurant?.name ?? '',
       description: managedRestaurant?.description ?? '',
     },
   })
+
+  const { mutateAsync: updateProfilefn } = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      queryCliente.invalidateQueries({ queryKey: ['profile'] })
+    },
+  })
+
+  function handleUpdateProfile(data: StoreProfileSchemaType) {
+    try {
+      updateProfilefn({
+        name: data.name,
+        description: data.description,
+      })
+      toast.success('Perfil atualizado com sucesso!')
+    } catch {
+      toast.error('Falha ao atualizar')
+    }
+  }
 
   return (
     <DialogContent>
@@ -46,7 +73,7 @@ export function StoreProfileDialog() {
           Atualize as informações do seu estabelecimento visíveis ao seu cliente
         </DialogDescription>
       </DialogHeader>
-      <form>
+      <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right" htmlFor="name">
@@ -59,17 +86,19 @@ export function StoreProfileDialog() {
               Descrição
             </Label>
             <Textarea
-              className="col-span-3"
+              className="col-span-3 min-h-24"
               id="description"
               {...register('description')}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" type="button">
-            Cancelar
-          </Button>
-          <Button type="submit" variant="sucess">
+          <DialogClose asChild>
+            <Button variant="ghost" type="button">
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button type="submit" disabled={isSubmitting} variant="sucess">
             Salvar
           </Button>
         </DialogFooter>
