@@ -1,4 +1,6 @@
 import { DialogTrigger } from '@radix-ui/react-dialog'
+import { formatDistanceToNow } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { ArrowRight, Search, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -6,8 +8,19 @@ import { Dialog } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
 
 import { OrderDetails } from './order-details'
+import { OrderStatus } from './order-status'
 
-export function OrderTableRow() {
+export interface OrderTableRowProps {
+  order: {
+    orderId: string
+    createdAt: string
+    status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
+    customerName: string
+    total: number
+  }
+}
+
+export function OrderTableRow({ order }: OrderTableRowProps) {
   return (
     <TableRow>
       <TableCell>
@@ -24,15 +37,22 @@ export function OrderTableRow() {
       <TableCell className="font-mono text-xs font-medium">
         4asdasd6a1sd84a
       </TableCell>
-      <TableCell className="text-muted-foreground">há 15 minutos</TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2 ">
-          <span className="size-2 rounded-full bg-slate-400"></span>
-          <span className="font-medium text-muted-foreground">Pendente</span>
-        </div>
+      <TableCell className="text-muted-foreground">
+        {formatDistanceToNow(order.createdAt, {
+          addSuffix: true,
+          locale: ptBR,
+        })}
       </TableCell>
-      <TableCell className="font-medium">Jhon Cruz</TableCell>
-      <TableCell className="font-medium">R$ 49,00</TableCell>
+      <TableCell>
+        <OrderStatus key={order.orderId} status={order.status} />
+      </TableCell>
+      <TableCell className="font-medium">{order.customerName}</TableCell>
+      <TableCell className="font-medium">
+        {order.total.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        })}
+      </TableCell>
       <TableCell>
         <Button variant="ghost" size="xs">
           <ArrowRight className="mr-2 size-3" />
