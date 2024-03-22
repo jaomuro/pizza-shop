@@ -25,12 +25,16 @@ export function Orders() {
     .parse(searchParams.get('page') ?? '1')
 
   const { data: result } = useQuery({
-    queryKey: ['orders'],
+    queryKey: ['orders', pageIndex],
     queryFn: () => getOrders({ pageIndex }),
   })
 
   function handlePaginate(pageIndex: number) {
-    setSearchParams((prev) => prev.set('page', pageIndex))
+    setSearchParams((state) => {
+      state.set('page', (pageIndex + 1).toString())
+
+      return state
+    })
   }
 
   return (
