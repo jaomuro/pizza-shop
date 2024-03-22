@@ -124,16 +124,16 @@ export function OrderTableFilters() {
         }}
       ></Controller>
 
-      <Button
-        onClick={handleClearFilters}
-        type="submit"
-        variant="secondary"
-        size="xs"
-      >
+      <Button type="submit" variant="secondary" size="xs">
         <Search className="mr-2 size-4" />
         Filtrar resultados
       </Button>
-      <Button type="button" variant="outline" size="xs">
+      <Button
+        onClick={handleClearFilters}
+        type="button"
+        variant="outline"
+        size="xs"
+      >
         <X className="mr-2 size-4" />
         Remover filtros
       </Button>
