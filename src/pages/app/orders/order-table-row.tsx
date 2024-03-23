@@ -1,9 +1,12 @@
 import { DialogTrigger } from '@radix-ui/react-dialog'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ArrowRight, Search, X } from 'lucide-react'
 import { useState } from 'react'
 
+import { GetOrdersResponse } from '@/api/get-orders'
+import { cancelOrder } from '@/api/pacth-cancel-order'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
@@ -22,7 +25,19 @@ export interface OrderTableRowProps {
 }
 
 export function OrderTableRow({ order }: OrderTableRowProps) {
+  const queryClient = useQueryClient()
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+
+  const { mutateAsync: cancelOrderfn } = useMutation({
+    mutationFn: cancelOrder,
+    onSuccess(_, { orderId }) {
+      const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
+        queryKey: ['orders'],
+      })
+
+      ordersListCache.forEach(([cachekey, cacheData]) => {})
+    },
+  })
 
   return (
     <TableRow>
@@ -66,7 +81,11 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
         </Button>
       </TableCell>
       <TableCell>
-        <Button variant="ghost" size="xs">
+        <Button
+          disabled={!['pending', 'processing'].includes(order.status)}
+          variant="ghost"
+          size="xs"
+        >
           <X className="mr-2 size-3" />
           Cancelar
         </Button>

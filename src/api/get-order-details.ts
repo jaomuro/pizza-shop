@@ -4,7 +4,7 @@ export interface GetOrderDetailsParams {
   orderId?: string
 }
 
-interface GetOrderDetailsResponse {
+export interface GetOrderDetailsResponse {
   id: string
   createdAt: string
   status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered'
