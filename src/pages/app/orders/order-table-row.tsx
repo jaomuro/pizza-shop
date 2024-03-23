@@ -35,7 +35,20 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
         queryKey: ['orders'],
       })
 
-      ordersListCache.forEach(([cachekey, cacheData]) => {})
+      ordersListCache.forEach(([cachekey, cacheData]) => {
+        if (!cacheData) {
+          return null
+        }
+        queryClient.setQueryData<GetOrdersResponse>(cachekey, {
+          ...cacheData,
+          orders: cacheData.orders.map((order) => {
+            if (order.orderId === orderId) {
+              return { ...order, status: 'canceled' }
+            }
+            return order
+          }),
+        })
+      })
     },
   })
 
@@ -82,6 +95,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
       </TableCell>
       <TableCell>
         <Button
+          onClick={() => cancelOrderfn({ orderId: order.orderId })}
           disabled={!['pending', 'processing'].includes(order.status)}
           variant="ghost"
           size="xs"
