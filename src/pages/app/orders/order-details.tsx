@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/table'
 
 import { OrderStatus } from './order-status'
+import { SkeletonOrderDetails } from './skeleton-order-details'
 
 interface OrderDetaiisProps {
   orderId: string
@@ -35,7 +36,7 @@ export function OrderDetails({ orderId, open }: OrderDetaiisProps) {
         <DialogTitle>Pedido: {orderId}</DialogTitle>
         <DialogDescription>Detalhes do pedido</DialogDescription>
       </DialogHeader>
-      {order && (
+      {order ? (
         <div className="space-y-6">
           <Table>
             <TableBody>
@@ -135,6 +136,8 @@ export function OrderDetails({ orderId, open }: OrderDetaiisProps) {
             </TableFooter>
           </Table>
         </div>
+      ) : (
+        <SkeletonOrderDetails />
       )}
     </DialogContent>
   )
