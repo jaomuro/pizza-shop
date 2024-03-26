@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { DollarSign } from 'lucide-react'
 
 import { getMonthCanceledOrdersAmount } from '@/api/get-month-canceled-orders-amount'
+import { MetricCardSkeleton } from '@/components/metric-card-skeleton'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function MonthCancelOrdersAmountCard() {
@@ -17,30 +18,34 @@ export function MonthCancelOrdersAmountCard() {
         </CardTitle>
         <DollarSign className="size-4 text-muted-foreground" />
       </CardHeader>
-      {dataMonthCancelOrdersAmount && (
-        <CardContent>
-          <span className="text-2xl font-bold tracking-tight">
-            {dataMonthCancelOrdersAmount?.amount.toLocaleString('pt-BR')}
-          </span>
-          <p className="text-sm text-muted-foreground">
-            {dataMonthCancelOrdersAmount?.diffFromLastMonth <= 0 ? (
-              <>
-                <span className="text-emerald-500 dark:text-emerald-400">
-                  +{dataMonthCancelOrdersAmount.diffFromLastMonth}%
-                </span>{' '}
-                em relação ao mês anterior
-              </>
-            ) : (
-              <>
-                <span className="text-rose-500 dark:text-rose-400">
-                  {dataMonthCancelOrdersAmount.diffFromLastMonth}%
-                </span>{' '}
-                em relação ao mês anterior
-              </>
-            )}
-          </p>
-        </CardContent>
-      )}
+      <CardContent>
+        {dataMonthCancelOrdersAmount ? (
+          <>
+            <span className="text-2xl font-bold tracking-tight">
+              {dataMonthCancelOrdersAmount?.amount.toLocaleString('pt-BR')}
+            </span>
+            <p className="text-sm text-muted-foreground">
+              {dataMonthCancelOrdersAmount?.diffFromLastMonth <= 0 ? (
+                <>
+                  <span className="text-emerald-500 dark:text-emerald-400">
+                    +{dataMonthCancelOrdersAmount.diffFromLastMonth}%
+                  </span>{' '}
+                  em relação ao mês anterior
+                </>
+              ) : (
+                <>
+                  <span className="text-rose-500 dark:text-rose-400">
+                    {dataMonthCancelOrdersAmount.diffFromLastMonth}%
+                  </span>{' '}
+                  em relação ao mês anterior
+                </>
+              )}
+            </p>
+          </>
+        ) : (
+          <MetricCardSkeleton />
+        )}
+      </CardContent>
     </Card>
   )
 }
